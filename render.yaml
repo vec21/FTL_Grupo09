@@ -5,7 +5,7 @@ services:
     rootDir: Tella_TurismoNacional/tella_project
     plan: free
     buildCommand: |
-      pip install -r ../requirements.txt
+      pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate --noinput
     startCommand: gunicorn tella_project.wsgi:application

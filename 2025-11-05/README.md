@@ -11,6 +11,7 @@ Esta pasta contém os entregáveis para 2025-11-05: finalização e apresentaç�
 - `Group09 Final Project.ipynb` — Notebook final com EDA, pré-processamento e treino do modelo.
 - `destinos_turisticos_angola.csv` — Conjunto de dados base com destinos turísticos em Angola.
 - `modelo_tella.joblib` — Modelo treinado serializado (Joblib) para inferência.
+- `Frontier_Tech_Leaders_ Programme_Capstone_Template Grupo 9.pptx` — Slides da apresentação final do projecto.
 
 ## Como usar
 - Notebook: abra `Group09 Final Project.ipynb` e execute as células na ordem.

@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Destinos - Tella{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'destino.css' %}">{% endblock %}
+{% block navbar %}
+<nav class="navbar navbar-expand-lg sticky-top bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:home' %}">
+      <img src="{% static 'brand/logo.png' %}" alt="TELLA" class="tella-logo" />
+      <span class="d-flex flex-column lh-1">
+        <span class="tella-wordmark">TELLA</span>
+        <small class="brand-sub">Turismo Nacional</small>
+      </span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}">Início</a></li>
+        <li class="nav-item"><a class="nav-link active fw-bold" href="#">Destinos</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'core:planejador' %}">Estimativa de Custos</a></li>
+      </ul>
+      <div class="d-flex align-items-center ms-lg-3">
+        {% if request.user.is_authenticated %}
+          <span class="me-2 small text-muted">Olá, {{ request.user.first_name|default:request.user.username }}</span>
+          <a href="{% url 'core:logout' %}" class="btn btn-outline-secondary btn-sm">Sair</a>
+        {% else %}
+          <a href="{% url 'core:login' %}" class="btn btn-outline-secondary btn-sm me-2">Entrar</a>
+          <a href="{% url 'core:cadastro' %}" class="btn btn-danger btn-sm">Cadastrar</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+{% endblock %}
+{% block content %}
+<section class="subhero bg-light border-bottom py-3">
+  <div class="container">
+    <h1 class="h4 fw-bold mb-1">Destinos</h1>
+    <p class="text-muted small mb-0">Pesquise e selecione um local para estimar custos</p>
+  </div>
+</section>
+<section class="container mt-4">
+  <div class="row mb-3">
+    <div class="col-lg-8">
+      <h2 class="fw-bold h5 mb-2">Pesquisar Locais</h2>
+      <p class="text-muted small mb-3">Use a busca inteligente para encontrar lugares. Selecionando um cartão você envia para o planejador e gera a estimativa de custos automaticamente.</p>
+    </div>
+    <div class="col-lg-4 text-lg-end">
+      <div class="small text-muted" id="usageHint">Exemplos: <span class="badge bg-light text-dark border">restaurants in Luanda</span> <span class="badge bg-light text-dark border">hotels in Luanda</span> <span class="badge bg-light text-dark border">museum Luanda</span></div>
+    </div>
+  </div>
+  <div class="mb-3 position-relative">
+    <input type="text" id="destinoSearch" class="form-control form-control-lg" placeholder="Digite termos como 'restaurants in Luanda' ou 'museum Luanda'" autocomplete="off">
+    <div class="small mt-1" id="searchStatus"></div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="small text-muted" id="resultCount"></div>
+    <button type="button" class="btn btn-sm btn-outline-secondary" id="clearBtn" style="display:none">Limpar</button>
+  </div>
+  <div id="featured" class="row g-4 mb-4"></div>
+  <div id="results" class="row g-4"></div>
+</section>
+<template id="tpl-card">
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0 h-100">
+      <div class="ratio ratio-16x9 bg-light placeholder-img"></div>
+      <div class="card-body d-flex flex-column">
+        <h5 class="fw-bold name"></h5>
+        <p class="text-muted small mb-1 address"></p>
+        <p class="small mb-2 rating"></p>
+        <form method="post" action="{% url 'core:estimate_place_cost' %}" class="mt-auto">
+          {% csrf_token %}
+          <input type="hidden" name="name">
+          <input type="hidden" name="address">
+          <input type="hidden" name="lat">
+          <input type="hidden" name="lng">
+          <input type="hidden" name="rating">
+          <input type="hidden" name="userRatingCount">
+          <input type="hidden" name="categoria_principal">
+          <input type="hidden" name="subcategoria">
+          <input type="hidden" name="provincia">
+          <button class="btn btn-vermelho w-100" type="submit">Estimar Custo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+<template id="tpl-featured-card">
+  <div class="col-md-4">
+    <div class="card shadow-sm border-0 h-100">
+      <img class="w-100 h-100 object-fit-cover rounded-top featured-img" loading="lazy" alt="Destino em destaque">
+      <div class="card-body d-flex flex-column">
+        <h5 class="fw-bold name"></h5>
+        <p class="text-muted small mb-1 address"></p>
+        <p class="small mb-2 rating"></p>
+        <form method="post" action="{% url 'core:estimate_place_cost' %}" class="mt-auto">
+          {% csrf_token %}
+          <input type="hidden" name="name">
+          <input type="hidden" name="address">
+          <input type="hidden" name="lat">
+          <input type="hidden" name="lng">
+          <input type="hidden" name="rating">
+          <input type="hidden" name="userRatingCount">
+          <input type="hidden" name="categoria_principal">
+          <input type="hidden" name="subcategoria">
+          <input type="hidden" name="provincia" value="Luanda">
+          <button class="btn btn-vermelho w-100 btn-sm" type="submit">Estimar Custo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+{% endblock %}
+{% block extra_js %}
+<script>
+  const input = document.getElementById('destinoSearch');
+  const resultsEl = document.getElementById('results');
+   const featuredEl = document.getElementById('featured');
+  const statusEl = document.getElementById('searchStatus');
+  const tpl = document.getElementById('tpl-card');
+   const tplFeatured = document.getElementById('tpl-featured-card');
+  const resultCountEl = document.getElementById('resultCount');
+  const clearBtn = document.getElementById('clearBtn');
+  let controller;
+  clearBtn.addEventListener('click', ()=>{ destinoSearch.value=''; searchPlaces(''); clearBtn.style.display='none'; });
+  function renderFeatured(){
+    const featuredData = [
+      {
+        name: 'Quedas de Kalandula',
+        address: 'Quedas de Kalandula, Malanje, Angola',
+        lat: -9.0536,
+        lng: 16.0033,
+        rating: 4.7,
+        userRatingCount: 320,
+        categoria_principal: 'tourist_attraction',
+        subcategoria: 'Atração Turística',
+        provincia: 'Malanje',
+  img: '{% static "img/kalandula-waterfalls-angola-majestic.jpg" %}'
+      },
+      {
+        name: 'Parque Nacional da Kissama',
+        address: 'Parque Nacional da Kissama, Bengo, Angola',
+        lat: -9.5579,
+        lng: 13.1830,
+        rating: 4.5,
+        userRatingCount: 210,
+        categoria_principal: 'park',
+        subcategoria: 'Parque',
+        provincia: 'Bengo',
+  img: '{% static "img/kissama-national-park-angola-wildlife-safari.jpg" %}'
+      },
+      {
+        name: 'Serra da Leba',
+        address: 'Serra da Leba, Lubango, Angola',
+        lat: -14.9489,
+        lng: 13.3357,
+        rating: 4.6,
+        userRatingCount: 180,
+        categoria_principal: 'tourist_attraction',
+        subcategoria: 'Atração Turística',
+        provincia: 'Huíla',
+  img: '{% static "img/serra-da-leba-angola-mountain-road.jpg" %}'
+      }
+    ];
+    featuredEl.innerHTML='';
+    featuredData.forEach(place => {
+      const node = tplFeatured.content.cloneNode(true);
+      const imgTag = node.querySelector('.featured-img');
+      imgTag.src = place.img;
+      imgTag.alt = place.name;
+      node.querySelector('.name').textContent = place.name;
+      node.querySelector('.address').textContent = place.address;
+      node.querySelector('.rating').innerHTML = `<i class='bi bi-star-fill text-warning'></i> ${place.rating} (${place.userRatingCount})`;
+      const form = node.querySelector('form');
+      form.querySelector('input[name=name]').value = place.name;
+      form.querySelector('input[name=address]').value = place.address;
+      form.querySelector('input[name=lat]').value = place.lat;
+      form.querySelector('input[name=lng]').value = place.lng;
+      form.querySelector('input[name=rating]').value = place.rating;
+      form.querySelector('input[name=userRatingCount]').value = place.userRatingCount;
+      form.querySelector('input[name=categoria_principal]').value = place.categoria_principal;
+      form.querySelector('input[name=subcategoria]').value = place.subcategoria;
+      form.querySelector('input[name=provincia]').value = place.provincia;
+      featuredEl.appendChild(node);
+    });
+  }
+
+  async function searchPlaces(q){
+    if(!q){
+       resultsEl.innerHTML='';
+       statusEl.textContent='';
+       renderFeatured();
+      return;
+    }
+    statusEl.textContent='Pesquisando...';
+    if(controller) controller.abort();
+    controller = new AbortController();
+    try {
+      const resp = await fetch(`{% url 'core:api_places_search' %}?q=${encodeURIComponent(q)}`, {signal: controller.signal});
+      const data = await resp.json();
+      resultsEl.innerHTML='';
+      if(data.error){
+        statusEl.innerHTML='Erro ao buscar: ' + data.error + '<br><span class="text-muted">Verifique a chave RAPIDAPI e tente termos como “restaurants in Luanda”.</span>';
+        return;
+      }
+      const arr = data.results || [];
+      statusEl.innerHTML = arr.length ? `${arr.length} resultado(s)` : 'Nenhum resultado.<br><span class="text-muted">Tente por exemplo: “restaurants in Luanda”, “hotels in Luanda”, “museums Luanda”.</span>';
+      if(q) clearBtn.style.display='inline-block'; else clearBtn.style.display='none';
+      arr.forEach(place => {
+        const node = tpl.content.cloneNode(true);
+        const imgWrap = node.querySelector('.placeholder-img');
+        if(place.photo_url){
+          const img = document.createElement('img');
+          img.src = place.photo_url;
+          img.alt = place.name || 'Foto do local';
+          img.loading = 'lazy';
+          img.className = 'w-100 h-100 object-fit-cover rounded-top';
+          imgWrap.replaceWith(img);
+        }
+         else {
+           // fallback local
+           const img = document.createElement('img');
+          img.src = '{% static "img/placeholder.jpg" %}';
+           img.alt = place.name || 'Foto do local';
+           img.loading = 'lazy';
+           img.className = 'w-100 h-100 object-fit-cover rounded-top';
+           imgWrap.replaceWith(img);
+         }
+        node.querySelector('.name').textContent = place.name || 'Sem nome';
+        node.querySelector('.address').textContent = place.address || '';
+        node.querySelector('.rating').innerHTML = `<i class='bi bi-star-fill text-warning'></i> ${place.rating || '—'} (${place.userRatingCount || 0})`;
+        const form = node.querySelector('form');
+        form.querySelector('input[name=name]').value = place.name || '';
+        form.querySelector('input[name=address]').value = place.address || '';
+        form.querySelector('input[name=lat]').value = place.lat || '';
+        form.querySelector('input[name=lng]').value = place.lng || '';
+        form.querySelector('input[name=rating]').value = place.rating || '';
+        form.querySelector('input[name=userRatingCount]').value = place.userRatingCount || '';
+        form.querySelector('input[name=categoria_principal]').value = place.categoria_principal || 'place';
+        form.querySelector('input[name=subcategoria]').value = place.subcategoria || 'Desconhecido';
+        form.querySelector('input[name=provincia]').value = place.provincia || '';
+        resultsEl.appendChild(node);
+      });
+      resultCountEl.textContent = arr.length ? `${arr.length} resultado(s)` : '';
+    } catch(e){
+      if(e.name === 'AbortError') return;
+      statusEl.textContent='Falha na requisição.';
+    }
+  }
+  let debounceTimer;
+  input.addEventListener('input', (e)=>{
+    clearTimeout(debounceTimer);
+    const v = e.target.value.trim();
+    debounceTimer = setTimeout(()=>searchPlaces(v), 450);
+  });
+   // Inicial: mostrar destaque
+   renderFeatured();
+</script>
+{% endblock %}

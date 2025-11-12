@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login - Tella{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'auth.css' %}">
+<style>
+  /* Evita inline style na linha 11 */
+  .auth-login-bg { background-image: url("{% static 'brand/Huila1-2048x1364.jpg' %}"); }
+</style>
+{% endblock %}
+{% block content %}
+<section class="auth-page">
+  <div class="container">
+    <div class="row auth-wrapper">
+      <!-- Left: Image hero -->
+      <div class="col-lg-7 auth-left d-none d-lg-block">
+        <div class="bg-image auth-login-bg"></div>
+        <div class="overlay-content">
+          <div class="auth-logo-stack mb-4">
+            <span class="tella-wordmark">TELLA</span>
+            <small class="brand-sub">Turismo Nacional</small>
+          </div>
+          <h2>Explore Angola com a TELLA</h2>
+          <p class="lead">Descubra destinos, e faz estimativas de custos.</p>
+          <a href="{% url 'core:destinos' %}" class="btn btn-outline-light btn-sm rounded-pill px-3">Explorar Destinos</a>
+        </div>
+      </div>
+      <!-- Right: Form -->
+      <div class="col-lg-5 bg-white auth-form-panel d-flex align-items-center">
+        <div class="w-100">
+          <div class="mb-4 d-lg-none text-center">
+            <img src="{% static 'brand/logo.png' %}" alt="TELLA" class="tella-logo" style="height:40px;"/>
+          </div>
+          <h3 class="mb-1">Bem-vindo(a) de volta!</h3>
+          <p class="lead-text">Entre para gerir reservas e explorar recomendações.</p>
+
+          <!-- Região de status para leitores de ecrã -->
+          <div id="formStatus" class="visually-hidden" aria-live="polite"></div>
+
+          <form method="post" novalidate aria-describedby="formStatus">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert" aria-live="assertive">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="mb-3">
+              <label class="form-label" for="id_username">Usuário</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person-fill" aria-hidden="true"></i></span>
+                {{ form.username }}
+              </div>
+              {% if form.username.errors %}<div class="text-danger small" id="usernameError" role="alert">{{ form.username.errors|striptags }}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="id_password">Senha</label>
+              <div class="input-group align-items-stretch">
+                <span class="input-group-text"><i class="bi bi-lock-fill" aria-hidden="true"></i></span>
+                {{ form.password }}
+              </div>
+              {% if form.password.errors %}<div class="text-danger small" id="passwordError" role="alert">{{ form.password.errors|striptags }}</div>{% endif %}
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="remember">
+                <label class="form-check-label" for="remember">Lembrar-me</label>
+              </div>
+              <a href="#" class="small-link">Esqueceu a senha?</a>
+            </div>
+            <button class="btn btn-auth-primary w-100 rounded-pill py-2" type="submit">Entrar</button>
+          </form>
+          <p class="text-center mt-3 mb-0">Ainda não tem conta? <a href="{% url 'core:cadastro' %}">Criar conta</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block footer %}{% endblock %}

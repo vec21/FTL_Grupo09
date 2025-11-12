@@ -1,0 +1,241 @@
+/* Estilo Global */
+.espaco{
+  padding-top:400px ;
+  padding-top:400px;
+}
+
+footer{
+  background-color: #351302;
+}
+.card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s;
+}
+
+
+
+.oferta-card {
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+.oferta-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Imagem com leve escurecimento no hover */
+.oferta-card img {
+  transition: all 0.4s ease;
+}
+.oferta-card:hover img {
+  filter: brightness(80%);
+  transform: scale(1.05);
+}
+
+/* Botão animado */
+.oferta-card .btn {
+  transition: all 0.3s ease;
+}
+.oferta-card .btn:hover {
+  background-color: #b71c1c;
+  color: #fff;
+}
+
+
+.destino-card {
+  height: 280px;
+  color: #fff;
+  transition: all 0.4s ease;
+}
+.destino-card img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.destino-card:hover img {
+  transform: scale(1.08);
+}
+.destino-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.1));
+  transition: all 0.5s ease;
+}
+
+/* Tornar os cards de destino um pouco menores em telas menores */
+@media (max-width: 992px) {
+  .destino-card { height: 280px; }
+}
+@media (max-width: 576px) {
+  .destino-card { height: 240px; }
+}
+
+
+
+/* 🔹 Ajuste geral do carrossel */
+.carousel-section {
+  position: relative;
+  top: 0;
+  width: 100%;
+  height: 70vh; /* altura menor para reduzir zoom */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 5%; /* 🔸 margens laterais */
+  background-color: #f9f6f0;
+}
+
+/* 🔹 Caixa do carrossel */
+#carouselMidia {
+  width: 100%;
+  height: 100%;
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+/* 🔹 Ajuste do conteúdo (imagem/vídeo) */
+.carousel-item img,
+.carousel-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 🔹 Controles */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(100%);
+  width: 3rem;
+  height: 3rem;
+}
+
+/* 🔹 Efeito visual moderno */
+.carousel {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+}
+
+    .navbar {
+      transition: background 0.3s ease;
+    }
+    .navbar.scrolled {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Carrossel */
+    .carousel-section {
+      height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5%;
+      background: #000;
+    }
+
+    .carousel-img {
+      height: 70vh;
+      object-fit: contain;
+      background-color: #000;
+    }
+
+    /* Seção de busca */
+    .search-section {
+      background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.3));
+      padding: 80px 0;
+      margin-top: -100px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Hover cards */
+    .hover-scale {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-scale:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+/* --------------------------------------
+   Ajustes de escala para manter proporção
+   e evitar efeito de "zoom" no carrossel
+-----------------------------------------*/
+.carousel .carousel-item .carousel-img {
+  object-fit: contain !important; /* garante que a imagem não fique cortada */
+}
+
+/* Alturas mais confortáveis em telas menores */
+@media (max-width: 992px) {
+  .carousel-section,
+  .carousel-img { height: 60vh; }
+}
+@media (max-width: 576px) {
+  .carousel-section,
+  .carousel-img { height: 50vh; }
+}
+
+/* Limitar largura máxima do conteúdo para evitar expansão excessiva em telas muito largas */
+.container { max-width: 1200px; }
+
+/* Estilos para o footer e links sociais */
+.tella-footer {
+  background: linear-gradient(135deg,#0A3D62,#042638);
+  color: #f1f1f1;
+  font-size: 0.9rem;
+}
+.tella-footer h5,
+.tella-footer h6 {
+  color: #fff;
+}
+.tella-footer .footer-link {
+  color: #d6e9f5;
+  text-decoration: none;
+  display: block;
+  padding: 2px 0;
+}
+.tella-footer .footer-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.tella-footer .social-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #143b52;
+  color: #fff;
+  text-decoration: none;
+  transition: .3s;
+}
+.tella-footer .social-btn:hover {
+  background: #1d526f;
+}
+.tella-footer hr {
+  border-color: #1d526f;
+}
+@media (max-width: 576px) {
+  .tella-footer .row > div {
+    text-align: center;
+  }
+  .tella-footer .social-btn {
+    margin-bottom: 4px;
+  }
+}
+
+/* Estilos para subhero e navbar refinada */
+.subhero {background:linear-gradient(to right,#f8f9fa,#eef4f7);} 
+.subhero h1 {color:#222;}
+.navbar .nav-link {font-weight:500;}
+.navbar .nav-link.active {color:#0A3D62 !important; position:relative;}
+.navbar .nav-link.active::after {content:''; position:absolute; left:0; bottom:0; width:100%; height:2px; background:#0A3D62; border-radius:4px;}
+.tella-logo { height: 36px; width: auto; display: block; }
+@media (max-width: 576px) { .tella-logo { height: 32px; } }
+
+.tella-wordmark { color:#00C7C7; font-weight:700; font-size:1.15rem; letter-spacing:0.5px; }
+.navbar-dark .tella-wordmark { color:#00C7C7; }
+.brand-sub { font-size:0.65rem; text-transform:uppercase; letter-spacing:1px; color:#555; margin-top:2px; display:block; }
+.navbar-dark .brand-sub { color:#e0e0e0; }
+@media (max-width:576px){ .tella-wordmark{font-size:1rem;} .brand-sub{font-size:0.55rem;} }

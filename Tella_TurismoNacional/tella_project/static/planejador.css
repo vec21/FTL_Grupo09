@@ -1,0 +1,49 @@
+
+    body {
+      background-color: #fdf8f3;
+    }
+    .navbar {
+      background-color: #fff7f2;
+      border-bottom: 1px solid #eee;
+    }
+    .card-dia {
+      background-color: #fff;
+      border-radius: 12px;
+      border: 1px solid #e0d7cf;
+      padding: 1.5rem;
+    }
+    .info-viagem {
+      background-color: #f6ebe0;
+      border-radius: 10px;
+      padding: 1rem;
+    }
+    .resumo {
+      background-color: #fff;
+      border-radius: 10px;
+      border: 1px solid #e5e5e5;
+      padding: 1.2rem;
+    }
+    .dica {
+      background-color: #eef6ff;
+      border-left: 4px solid #4c83ff;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    .btn-vermelho {
+      background-color: #b22222;
+      color: #fff;
+      border: none;
+    }
+    .btn-vermelho:hover {
+      background-color: #a11d1d;
+    }
+    .dia-header {
+      background-color: #b22222;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+
+    

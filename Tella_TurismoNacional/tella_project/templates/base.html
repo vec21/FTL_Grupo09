@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Tella{% endblock %}</title>
+  <!-- Preload CSS crítico -->
+  <link rel="preload" href="{% static 'css/bootstrap.min.css' %}" as="style" crossorigin>
+  <link rel="preload" href="{% static 'css/font/bootstrap-icons.min.css' %}" as="style" crossorigin>
+  <link rel="preload" href="{% static 'style.css' %}" as="style">
+  <!-- Folhas de estilo -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/font/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  {% block extra_css %}{% endblock %}
+  <!-- Favicons completos -->
+  <link rel="shortcut icon" href="{% static 'favicons/favicon.ico' %}">
+  <link rel="icon" type="image/x-icon" href="{% static 'favicons/favicon.ico' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicons/favicon-16x16.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicons/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'favicons/android-chrome-192x192.png' %}">
+  <link rel="icon" type="image/png" sizes="512x512" href="{% static 'favicons/android-chrome-512x512.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicons/apple-touch-icon.png' %}">
+  <link rel="manifest" href="{% static 'favicons/site.webmanifest' %}">
+  <meta name="theme-color" content="#0A3D62">
+</head>
+<body class="bg-light">
+  <!-- Mensagens -->
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% block navbar %}{% endblock %}
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  {% block footer %}
+  <footer class="tella-footer mt-5 text-light pt-5">
+    <div class="container pb-4">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <h5 class="fw-bold">TELLA</h5>
+          <p class="small mb-2">Turismo Nacional de Angola: inspiração, planejamento e inteligência de custos.</p>
+          <p class="small text-secondary">Explorando cultura, natureza, gastronomia e experiências únicas.</p>
+        </div>
+        <div class="col-6 col-md-2">
+          <h6 class="fw-semibold">Navegação</h6>
+          <ul class="list-unstyled small">
+            <li><a class="footer-link" href="{% url 'core:home' %}">Início</a></li>
+            <li><a class="footer-link" href="{% url 'core:destinos' %}">Destinos</a></li>
+            <li><a class="footer-link" href="{% url 'core:planejador' %}">Planejador</a></li>
+            <li><a class="footer-link" href="{% url 'core:sobre' %}">Sobre</a></li>
+            <li><a class="footer-link" href="{% url 'core:contato' %}">Contato</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3">
+          <h6 class="fw-semibold">Categorias</h6>
+          <ul class="list-unstyled small">
+            <li>Praias</li>
+            <li>Eco-Turismo</li>
+            <li>Cultural & Histórico</li>
+            <li>Montanha</li>
+            <li>Parques</li>
+          </ul>
+        </div>
+        <div class="col-md-3">
+          <h6 class="fw-semibold">Contato</h6>
+          <ul class="list-unstyled small">
+            <li><i class="bi bi-envelope"></i> suporte@tella.ao</li>
+            <li><i class="bi bi-geo"></i> Luanda, Angola</li>
+          </ul>
+          <div class="d-flex gap-2 mt-2">
+            <a href="#" class="social-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-btn" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-btn" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+          </div>
+        </div>
+      </div>
+      <hr class="border-secondary opacity-25 mt-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small">
+        <span>&copy; {% now 'Y' %} TELLA. Todos os direitos reservados.</span>
+      </div>
+    </div>
+  </footer>
+  {% endblock %}
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+  <script>
+    // Navbar muda cor ao rolar
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('.navbar');
+      if (nav){
+        if (window.scrollY > 50) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>

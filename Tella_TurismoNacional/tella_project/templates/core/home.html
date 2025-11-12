@@ -1,0 +1,463 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}TELLA{% endblock %}
+
+{% block navbar %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-transparent position-absolute w-100 z-3">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'core:home' %}">
+        <img src="{% static 'brand/logo.png' %}" alt="TELLA" style="height:36px;width:auto;"/>
+        <span class="d-flex flex-column lh-1">
+          <span class="tella-wordmark">TELLA</span>
+          <small class="brand-sub">Turismo Nacional</small>
+        </span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto text-uppercase fw-semibold">
+          <li class="nav-item"><a class="nav-link text-white" href="#explorar">Explorar</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#lugares">Lugares</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#servicos">Serviços</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="#ofertas">Ofertas</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {% if request.user.is_authenticated %}Olá, {{ request.user.first_name|default:request.user.username }}{% else %}Conta{% endif %}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% if request.user.is_authenticated %}
+                <li><a class="dropdown-item" href="{% url 'core:destinos' %}">Destinos</a></li>
+                <li><a class="dropdown-item" href="{% url 'core:planejador' %}">Estimativa de Custos</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'core:logout' %}">Sair</a></li>
+              {% else %}
+                <li><a class="dropdown-item" href="{% url 'core:login' %}">Entrar</a></li>
+                <li><a class="dropdown-item" href="{% url 'core:cadastro' %}">Criar conta</a></li>
+              {% endif %}
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <section class="carousel-section">
+    <div id="carouselMidia" class="carousel slide shadow-lg rounded-4 overflow-hidden" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{% static 'img/stunning-aerial-view-of-luanda-angola-coastline-su.jpg' %}" class="d-block w-100 carousel-img" alt="Vista aérea de Luanda" loading="eager">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'img/WhatsApp Image 2025-10-19 at 14.04.09.jpeg' %}" class="d-block w-100 carousel-img" alt="Paisagem 2" loading="lazy">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'img/serra-da-leba-angola-mountain-road.jpg' %}" class="d-block w-100 carousel-img" alt="Serra da Leba" loading="lazy">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'img/WhatsApp Image 2025-10-19 at 14.04.12 (2).jpeg' %}" class="d-block w-100 carousel-img" alt="Paisagem 3" loading="lazy">
+        </div>
+        <div class="carousel-item">
+          <img src="{% static 'img/WhatsApp Image 2025-10-19 at 14.04.11.jpeg' %}" class="d-block w-100 carousel-img" alt="Paisagem 4" loading="lazy">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselMidia" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselMidia" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </section>
+
+  <section class="search-section text-center text-white d-flex align-items-center justify-content-center">
+    <div class="bg-dark bg-opacity-75 p-4 rounded-4 shadow-lg w-75">
+      <h3 class="fw-bold mb-3 text-uppercase">Planeie sua próxima viagem</h3>
+      <form id="quickPlanner" class="row g-2 justify-content-center" autocomplete="off" role="search">
+        <div class="col-12 col-md-3">
+          <label class="visually-hidden" for="from">Sua localização</label>
+          <input id="from" name="from" type="text" class="form-control rounded-pill" placeholder="Sua localização (opcional)">
+        </div>
+        <div class="col-12 col-md-4 position-relative">
+          <label class="visually-hidden" for="to">Destino</label>
+          <input id="to" name="to" type="search" class="form-control rounded-pill" placeholder="Destino (em Angola)" required>
+          <div id="toResults" class="list-group position-absolute w-100 mt-1" style="z-index: 20;"></div>
+          {% csrf_token %}
+          <input type="hidden" name="name">
+          <input type="hidden" name="address">
+          <input type="hidden" name="lat">
+          <input type="hidden" name="lng">
+          <input type="hidden" name="rating">
+          <input type="hidden" name="userRatingCount">
+          <input type="hidden" name="categoria_principal">
+        </div>
+        <div class="col-6 col-md-2">
+          <label class="visually-hidden" for="days">Dias</label>
+          <input id="days" name="duracao_dias" type="number" min="1" max="14" value="3" class="form-control rounded-pill" />
+        </div>
+        <div class="col-6 col-md-2">
+          <label class="visually-hidden" for="budget">Orçamento</label>
+          <select id="budget" name="nivel_orcamento" class="form-select rounded-pill">
+            <option value="economico">Económico</option>
+            <option value="medio" selected>Médio</option>
+            <option value="luxo">Luxo</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-1">
+          <button type="submit" class="btn btn-danger rounded-pill w-100 fw-semibold">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+      <p class="small text-muted mt-2">* Apenas destinos dentro de Angola</p>
+    </div>
+  </section>
+
+  <section id="explorar" class="py-5 bg-light">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-3 text-uppercase">Explore por Categoria</h2>
+      <p class="text-muted mb-5">Descubra restaurantes, hotéis e experiências únicas</p>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 p-4 hover-scale">
+            <i class="bi bi-egg-fried fs-2 text-danger mb-3"></i>
+            <h5 class="fw-bold">Restaurantes</h5>
+            <p class="text-muted small">Sabores únicos e locais incríveis.</p>
+            <a href="{% url 'core:destinos' %}" class="btn btn-outline-danger rounded-pill btn-sm mt-2">Ver mais</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 p-4 hover-scale">
+            <i class="bi bi-house-heart fs-2 text-primary mb-3"></i>
+            <h5 class="fw-bold">Hotéis</h5>
+            <p class="text-muted small">Hospedagens para todos os estilos.</p>
+            <a href="{% url 'core:destinos' %}" class="btn btn-outline-primary rounded-pill btn-sm mt-2">Ver mais</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 p-4 hover-scale">
+            <i class="bi bi-map fs-2 text-success mb-3"></i>
+            <h5 class="fw-bold">Pontos Turísticos</h5>
+            <p class="text-muted small">Descubra lugares inesquecíveis.</p>
+            <a href="{% url 'core:destinos' %}" class="btn btn-outline-success rounded-pill btn-sm mt-2">Ver mais</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm rounded-4 p-4 hover-scale">
+            <i class="bi bi-stars fs-2 text-warning mb-3"></i>
+            <h5 class="fw-bold">Experiências</h5>
+            <p class="text-muted small">Atividades que marcam a alma.</p>
+            <a href="{% url 'core:destinos' %}" class="btn btn-outline-warning rounded-pill btn-sm mt-2">Ver mais</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lugares" class="py-5" style="background-color: #f8f5ef;">
+    <div class="container text-center">
+      <span class="badge bg-warning text-dark px-4 py-2 rounded-pill mb-3 fw-semibold shadow-sm">Destinos em Destaque</span>
+      <h2 class="fw-bold mb-2" style="color:#2d1b0b;">Lugares Mais Visitados</h2>
+      <p class="text-muted mb-5">Explore os pontos turísticos mais populares e experiências únicas que Angola tem para oferecer</p>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="card destino-card border-0 rounded-4 overflow-hidden position-relative">
+            <img src="{% static 'img/kalandula-waterfalls-angola-majestic.jpg' %}" class="card-img" alt="Kalandula Falls" loading="lazy">
+            <div class="overlay"></div>
+            <div class="card-img-overlay d-flex flex-column justify-content-end text-start p-3">
+              <div class="d-flex align-items-center mb-1">
+                <i class="bi bi-geo-alt-fill me-1"></i> <small>Malanje</small>
+              </div>
+              <h5 class="fw-bold text-white mb-1">Kalandula Falls</h5>
+              <p class="small mb-2">Uma das maiores quedas de água de África</p>
+              <div class="d-flex justify-content-between align-items-center text-white-50 small">
+                <span><i class="bi bi-star-fill text-warning"></i> 4.9</span>
+                <span>50k+ visitantes</span>
+              </div>
+              <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">⬆ Em Alta</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card destino-card border-0 rounded-4 overflow-hidden position-relative">
+            <img src="{% static 'img/luxury-beach-resort-angola-sunset.jpg' %}" class="card-img" alt="Ilha do Mussulo" loading="lazy">
+            <div class="overlay"></div>
+            <div class="card-img-overlay d-flex flex-column justify-content-end text-start p-3">
+              <div class="d-flex align-items-center mb-1">
+                <i class="bi bi-geo-alt-fill me-1"></i> <small>Luanda</small>
+              </div>
+              <h5 class="fw-bold text-white mb-1">Ilha do Mussulo</h5>
+              <p class="small mb-2">Paraíso tropical com praias deslumbrantes</p>
+              <div class="d-flex justify-content-between align-items-center text-white-50 small">
+                <span><i class="bi bi-star-fill text-warning"></i> 4.8</span>
+                <span>120k+ visitantes</span>
+              </div>
+              <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">⬆ Em Alta</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card destino-card border-0 rounded-4 overflow-hidden position-relative">
+            <img src="{% static 'img/serra-da-leba-angola-mountain-road.jpg' %}" class="card-img" alt="Serra da Leba" loading="lazy">
+            <div class="overlay"></div>
+            <div class="card-img-overlay d-flex flex-column justify-content-end text-start p-3">
+              <div class="d-flex align-items-center mb-1">
+                <i class="bi bi-geo-alt-fill me-1"></i> <small>Huíla</small>
+              </div>
+              <h5 class="fw-bold text-white mb-1">Serra da Leba</h5>
+              <p class="small mb-2">Estrada panorâmica com vistas espetaculares</p>
+              <div class="d-flex justify-content-between align-items-center text-white-50 small">
+                <span><i class="bi bi-star-fill text-warning"></i> 4.9</span>
+                <span>35k+ visitantes</span>
+              </div>
+              <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">⬆ Em Alta</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card destino-card border-0 rounded-4 overflow-hidden position-relative">
+            <img src="{% static 'img/kissama-national-park-angola-wildlife-safari.jpg' %}" class="card-img" alt="Parque Nacional da Kissama" loading="lazy">
+            <div class="overlay"></div>
+            <div class="card-img-overlay d-flex flex-column justify-content-end text-start p-3">
+              <div class="d-flex align-items-center mb-1">
+                <i class="bi bi-geo-alt-fill me-1"></i> <small>Luanda</small>
+              </div>
+              <h5 class="fw-bold text-white mb-1">Parque Nacional da Kissama</h5>
+              <p class="small mb-2">Safari africano com vida selvagem diversificada</p>
+              <div class="d-flex justify-content-between align-items-center text-white-50 small">
+                <span><i class="bi bi-star-fill text-warning"></i> 4.7</span>
+                <span>28k+ visitantes</span>
+              </div>
+              <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">⬆ Em Alta</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicos" class="py-5" style="background-color:#f8f6f2;">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-2">Serviços de Transporte</h2>
+      <p class="text-muted mb-5">Encontre as melhores opções de transporte para sua viagem</p>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 p-3 rounded-4">
+            <div class="card-body">
+              <div class="bg-light d-inline-flex justify-content-center align-items-center rounded-4 p-3 mb-3" style="width:60px;height:60px;">
+                <i class="bi bi-bus-front fs-3 text-danger"></i>
+              </div>
+              <h5 class="fw-bold">Transporte Rodoviário</h5>
+              <p class="text-muted small">Rotas de ônibus e vans para todas as províncias</p>
+              <hr>
+              <p class="fw-semibold small mb-1">Operadores:</p>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-light text-dark border">Macon</span>
+                <span class="badge bg-light text-dark border">SGO</span>
+                <span class="badge bg-light text-dark border">Transporte Urbano</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 p-3 rounded-4">
+            <div class="card-body">
+              <div class="bg-light d-inline-flex justify-content-center align-items-center rounded-4 p-3 mb-3" style="width:60px;height:60px;">
+                <i class="bi bi-airplane fs-3 text-danger"></i>
+              </div>
+              <h5 class="fw-bold">Voos Domésticos</h5>
+              <p class="text-muted small">Conexões aéreas rápidas entre cidades</p>
+              <hr>
+              <p class="fw-semibold small mb-1">Operadores:</p>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-light text-dark border">TAAG</span>
+                <span class="badge bg-light text-dark border">Fly Angola</span>
+                <span class="badge bg-light text-dark border">SonAir</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 p-3 rounded-4">
+            <div class="card-body">
+              <div class="bg-light d-inline-flex justify-content-center align-items-center rounded-4 p-3 mb-3" style="width:60px;height:60px;">
+                <i class="bi bi-car-front fs-3 text-danger"></i>
+              </div>
+              <h5 class="fw-bold">Aluguel de Veículos</h5>
+              <p class="text-muted small">Carros e 4x4 para explorar com liberdade</p>
+              <hr>
+              <p class="fw-semibold small mb-1">Operadores:</p>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-light text-dark border">Avis</span>
+                <span class="badge bg-light text-dark border">Europcar</span>
+                <span class="badge bg-light text-dark border">Local Rent</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 p-3 rounded-4">
+            <div class="card-body">
+              <div class="bg-light d-inline-flex justify-content-center align-items-center rounded-4 p-3 mb-3" style="width:60px;height:60px;">
+                <i class="bi bi-ship fs-3 text-danger"></i>
+              </div>
+              <h5 class="fw-bold">Transporte Marítimo</h5>
+              <p class="text-muted small">Passeios de barco e ferry para ilhas</p>
+              <hr>
+              <p class="fw-semibold small mb-1">Operadores:</p>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-light text-dark border">Marina Luanda</span>
+                <span class="badge bg-light text-dark border">Boat Tours</span>
+                <span class="badge bg-light text-dark border">Ferry Service</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ofertas" class="py-5" style="background-color:#f8f6f2;">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-2">Ofertas Especiais</h2>
+      <p class="text-muted mb-5">Aproveite promoções exclusivas e eventos imperdíveis</p>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="card oferta-card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="position-relative">
+              <img src="{% static 'img/angola-cultural-festival-music-dance.jpg' %}" class="card-img-top" alt="Festival de Cultura Angolana" loading="lazy">
+              <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill">Evento Especial</span>
+            </div>
+            <div class="card-body text-start">
+              <h5 class="fw-bold">Festival de Cultura Angolana</h5>
+              <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill text-danger"></i> Luanda</p>
+              <p class="text-muted"><i class="bi bi-calendar-event text-danger"></i> 15–20 Março</p>
+              <a href="{% url 'core:planejador' %}" class="btn btn-danger w-100 rounded-pill fw-semibold">Saber Mais</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="card oferta-card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="position-relative">
+              <img src="{% static 'img/mussulo-island-angola-beach-paradise.jpg' %}" class="card-img-top" alt="Pacote Resort Mussulo" loading="lazy">
+              <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill">Promoção</span>
+            </div>
+            <div class="card-body text-start">
+              <h5 class="fw-bold">Pacote Resort Mussulo</h5>
+              <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill text-danger"></i> Ilha do Mussulo</p>
+              <p class="text-muted"><i class="bi bi-clock-fill text-danger"></i> Disponível Agora</p>
+              <a href="{% url 'core:planejador' %}" class="btn btn-danger w-100 rounded-pill fw-semibold">Saber Mais</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="card oferta-card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="position-relative">
+              <img src="{% static 'img/angolan-cuisine-traditional-food-restaurant.jpg' %}" class="card-img-top" alt="Tour Gastronômico" loading="lazy">
+              <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill">Experiência</span>
+            </div>
+            <div class="card-body text-start">
+              <h5 class="fw-bold">Tour Gastronômico</h5>
+              <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill text-danger"></i> Benguela</p>
+              <p class="text-muted"><i class="bi bi-calendar-week text-danger"></i> Fins de Semana</p>
+              <a href="{% url 'core:planejador' %}" class="btn btn-danger w-100 rounded-pill fw-semibold">Saber Mais</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+  (function(){
+    const to = document.getElementById('to');
+    const list = document.getElementById('toResults');
+    const form = document.getElementById('quickPlanner');
+    if (!to || !list || !form) return;
+    const hiddenInputs = {};
+    form.querySelectorAll('input[type="hidden"]').forEach(i => hiddenInputs[i.name] = i);
+    let ctrl = null; let debounceTimer = null; let picked = null;
+
+    function clearResults(){ list.innerHTML=''; }
+    function render(items){
+      clearResults();
+      if (!items || !items.length) return;
+      items.slice(0,6).forEach(p => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'list-group-item list-group-item-action';
+        const name = p.name || ''; const address = p.address || '';
+        btn.textContent = name + (address ? ' — ' + address : '');
+        btn.onclick = () => {
+          picked = p;
+          to.value = name;
+          hiddenInputs.name.value = name;
+          hiddenInputs.address.value = address;
+          hiddenInputs.lat.value = p.lat ?? '';
+          hiddenInputs.lng.value = p.lng ?? '';
+          hiddenInputs.rating.value = p.rating ?? '';
+          hiddenInputs.userRatingCount.value = p.userRatingCount ?? '';
+          hiddenInputs.categoria_principal.value = p.categoria_principal ?? '';
+          clearResults();
+        };
+        list.appendChild(btn);
+      });
+    }
+
+    to.addEventListener('input', () => {
+      picked = null; clearResults();
+      const q = to.value.trim(); if (!q) return;
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(async () => {
+        try {
+          if (ctrl) ctrl.abort();
+          ctrl = new AbortController();
+          const r = await fetch(`/api/places/search/?q=${encodeURIComponent(q)}`, {signal: ctrl.signal});
+          const data = await r.json();
+          const items = data.results || data.places || [];
+          render(items);
+        } catch (e) { /* ignore */ }
+      }, 300);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!list.contains(e.target) && e.target !== to) clearResults();
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (picked && hiddenInputs.name.value) {
+        const post = document.createElement('form');
+        post.method = 'POST'; post.action = '/api/places/estimate/';
+        const csrf = form.querySelector('input[name="csrfmiddlewaretoken"]');
+        const fields = {
+          'csrfmiddlewaretoken': csrf ? csrf.value : '',
+          'name': hiddenInputs.name.value,
+          'address': hiddenInputs.address.value,
+          'lat': hiddenInputs.lat.value,
+          'lng': hiddenInputs.lng.value,
+          'rating': hiddenInputs.rating.value,
+          'userRatingCount': hiddenInputs.userRatingCount.value,
+          'categoria_principal': hiddenInputs.categoria_principal.value,
+          'duracao_dias': form.elements['duracao_dias'].value || '3',
+          'nivel_orcamento': form.elements['nivel_orcamento'].value || 'medio',
+          'tipo_viajante': 'família',
+          'precisa_transporte': 'sim',
+          'precisa_hospedagem': 'sim'
+        };
+        Object.entries(fields).forEach(([k,v])=>{
+          const input = document.createElement('input');
+          input.type='hidden'; input.name=k; input.value=v ?? '';
+          post.appendChild(input);
+        });
+        document.body.appendChild(post); post.submit();
+      } else {
+        const q = to.value.trim();
+        if (q) window.location.href = `/destinos/?q=${encodeURIComponent(q)}`;
+      }
+    });
+  })();
+  </script>
+{% endblock %}

@@ -1,0 +1,42 @@
+ body {
+      background-color: #fdf8f3;
+    }
+    .navbar {
+      background-color: #fff7f2;
+      border-bottom: 1px solid #eee;
+    }
+    .nav-link.active {
+      font-weight: 600;
+    }
+    .btn-vermelho {
+      background-color: #b22222;
+      color: white;
+      border: none;
+    }
+    .btn-vermelho:hover {
+      background-color: #a11d1d;
+    }
+.tag {
+    display: inline-block;
+    padding: 3px 8px;
+    background-color: #f5e6d0;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      margin-right: 5px;
+      color: #5a3e2b;
+  }
+.card img {
+    height: 170px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+    }
+/* Tipografia mais compacta e menor padding para reduzir o bloco visual */
+.card .card-body { padding: 0.9rem; }
+.card .card-title { font-size: 1rem; }
+.card p { margin-bottom: 0.4rem; }
+@media (max-width: 992px) {
+  .card img { height: 150px; }
+}
+@media (max-width: 576px) {
+  .card img { height: 130px; }
+}

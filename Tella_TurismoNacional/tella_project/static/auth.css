@@ -1,0 +1,62 @@
+/* Auth pages (login & cadastro) */
+:root {
+  --brand-dark: #0A3D62;
+  --brand-accent: #00C7C7;
+  --brand-radius: 14px;
+}
+.auth-page { min-height: 100vh; background: linear-gradient(180deg, rgba(10,61,98,.06), rgba(10,61,98,.06)); display:flex; align-items:center; padding:3rem 0; }
+.auth-wrapper { box-shadow:0 18px 40px -8px rgba(0,0,0,.25); border-radius: var(--brand-radius); overflow:hidden; background:#fff; }
+.auth-left { position:relative; min-height:560px; background:#000; }
+.auth-left .bg-image { position:absolute; inset:0; background-size:cover; background-position:center; filter:saturate(105%) contrast(95%); }
+.auth-left::after { content:""; position:absolute; inset:0; background:linear-gradient(135deg,rgba(0,0,0,0.55),rgba(0,0,0,0.35)); }
+.auth-left .overlay-content { position:relative; z-index:2; padding:3.5rem 3rem 3rem; color:#fff; max-width:420px; }
+.auth-left h2 { font-weight:700; font-size:2.05rem; line-height:1.15; margin-bottom:.75rem; }
+.auth-left p { color:rgba(255,255,255,.9); }
+.auth-logo-stack { display:flex; flex-direction:column; line-height:1; }
+.auth-logo-stack .tella-wordmark { font-size:2rem; color: var(--brand-accent); font-weight:700; letter-spacing:.5px; }
+.auth-logo-stack .brand-sub { font-size:.75rem; text-transform:uppercase; letter-spacing:1px; color:#e0e0e0; }
+.auth-form-panel { padding:2.75rem 2.5rem; }
+@media (min-width: 992px){ .auth-form-panel { padding:3.25rem 3rem; } }
+.auth-form-panel h3 { font-weight:700; margin-bottom:.35rem; }
+.auth-form-panel .lead-text { color:#555; font-size:.95rem; margin-bottom:1.75rem; }
+.input-group-text { background:#f5f8fa; border-color:#dbe2e7; border-right:0; border-radius:.375rem 0 0 .375rem; }
+.form-control:focus { border-color: var(--brand-accent); box-shadow:0 0 0 .2rem rgba(0,199,199,.15); }
+.btn-auth-primary { background: var(--brand-dark); border:none; font-weight:600; letter-spacing:.5px; }
+.btn-auth-primary:hover, .btn-auth-primary:focus { background: var(--brand-accent); }
+.small-link { font-size:.8rem; }
+.divider { position:relative; text-align:center; margin:2rem 0 1.5rem; }
+.divider::before, .divider::after { content:""; position:absolute; top:50%; width:38%; height:1px; background:#e5e9ec; }
+.divider::before { left:0; } .divider::after { right:0; }
+.divider small { color:#7a8891; }
+.alt-providers .btn { font-weight:500; }
+.auth-footer { margin-top:2rem; color:#7a8891; font-size:.75rem; }
+.toggle-pass-btn { border:none;
+     background:transparent; color:#555; font-size:.75rem; padding:.35rem .65rem; cursor:pointer; }
+.toggle-pass-btn:hover { color: var(--brand-dark); }
+
+/* Aparência integrada com input-group (alinhamento e bordas) */
+.input-group .toggle-pass-btn{
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  font-size:.875rem; font-weight:500;
+  padding:.375rem 1.1rem; /* aumentado para mais área clicável */
+  margin-left:-1px;
+  background:#fff; color:#0A3D62;
+  border:1px solid #dbe2e7; border-left:0;
+  border-radius:0 .375rem .375rem 0;
+  height: calc(1.5em + .75rem + 2px);
+  line-height:1.5;
+  transition:.15s background,color,border-color,box-shadow;
+}
+.input-group .toggle-pass-btn:hover{ background:#eef7f7; color:#0A3D62; }
+.input-group .toggle-pass-btn:focus{ outline:none; border-color: var(--brand-accent); box-shadow:0 0 0 .2rem rgba(0,199,199,.15); }
+.input-group .toggle-pass-btn[aria-pressed="true"]{ background:#00C7C7; color:#fff; border-color:#00B3B3; }
+/* Ajuste para evitar salto de largura */
+@media (max-width:576px){
+  .input-group .toggle-pass-btn{ font-size:.75rem; padding:.4rem .9rem; }
+}
+/* Responsive */
+@media (max-width: 991.98px){
+  .auth-left { display:none; }
+  .auth-page { padding:2rem 0; }
+  .auth-form-panel { padding:2.25rem 1.5rem; }
+}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cadastro - Tella{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'auth.css' %}">
+<style>
+  .auth-signup-bg { background-image: url("{% static 'brand/zaire2.jpg' %}"); }
+</style>
+{% endblock %}
+{% block content %}
+<section class="auth-page">
+  <div class="container">
+    <div class="row auth-wrapper">
+      <!-- Left: Image hero -->
+      <div class="col-lg-7 auth-left d-none d-lg-block">
+        <div class="bg-image auth-signup-bg"></div>
+        <div class="overlay-content">
+          <div class="auth-logo-stack mb-4">
+            <span class="tella-wordmark">TELLA</span>
+            <small class="brand-sub">Turismo Nacional</small>
+          </div>
+          <h2>Junte-se à comunidade TELLA</h2>
+          <p class="lead">Crie a sua conta e faz uma estimativa de custos para viagens incríveis por Angola.</p>
+          <a href="{% url 'core:home' %}" class="btn btn-outline-light btn-sm rounded-pill px-3">Voltar ao início</a>
+        </div>
+      </div>
+      <!-- Right: Form -->
+      <div class="col-lg-5 bg-white auth-form-panel d-flex align-items-center">
+        <div class="w-100">
+          <div class="mb-4 d-lg-none text-center">
+            <img src="{% static 'brand/logo.png' %}" alt="TELLA" class="tella-logo" style="height:40px;"/>
+          </div>
+          <h3 class="mb-1">Criar conta</h3>
+          <p class="lead-text">Preencha os dados abaixo para começar.</p>
+          <div id="formStatus" class="visually-hidden" aria-live="polite"></div>
+          <form method="post" novalidate aria-describedby="formStatus">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger" role="alert" aria-live="assertive">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="id_first_name">Nome</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person-fill" aria-hidden="true"></i></span>
+                  {{ form.first_name }}
+                </div>
+                {% if form.first_name.errors %}<div class="text-danger small" role="alert">{{ form.first_name.errors|striptags }}</div>{% endif %}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="id_username">Usuário</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-at" aria-hidden="true"></i></span>
+                  {{ form.username }}
+                </div>
+                {% if form.username.errors %}<div class="text-danger small" role="alert">{{ form.username.errors|striptags }}</div>{% endif %}
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="id_email">Email</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope-fill" aria-hidden="true"></i></span>
+                {{ form.email }}
+              </div>
+              {% if form.email.errors %}<div class="text-danger small" role="alert">{{ form.email.errors|striptags }}</div>{% endif %}
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="id_password1">Senha</label>
+                <div class="input-group align-items-stretch">
+                  <span class="input-group-text"><i class="bi bi-lock-fill" aria-hidden="true"></i></span>
+                  {{ form.password1 }}
+                </div>
+                {% if form.password1.errors %}<div class="text-danger small" role="alert">{{ form.password1.errors|striptags }}</div>{% endif %}
+                <div class="pass-hint">Mínimo 8 caracteres, incluindo letras e números.</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="id_password2">Confirmar Senha</label>
+                <div class="input-group align-items-stretch">
+                  <span class="input-group-text"><i class="bi bi-lock-fill" aria-hidden="true"></i></span>
+                  {{ form.password2 }}
+                </div>
+                {% if form.password2.errors %}<div class="text-danger small" role="alert">{{ form.password2.errors|striptags }}</div>{% endif %}
+              </div>
+            </div>
+            <button class="btn btn-auth-primary w-100 rounded-pill py-2" type="submit">Cadastrar</button>
+          </form>
+          <p class="text-center mt-3 mb-0">Já tem conta? <a href="{% url 'core:login' %}">Entrar</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block footer %}{% endblock %}

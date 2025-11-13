@@ -17,3 +17,13 @@ Esta pasta contém os entregáveis para 2025-10-31: desenvolvimento e implementa
 ## Deploy
 - Arquivo de blueprint: `render.yaml` (na raiz) com `rootDir: Tella_TurismoNacional/tella_project`.
 - Veja instruções completas em `Tella_TurismoNacional/README.md`.
+
+## Aplicação (Render)
+- URL pública: https://ftl-grupo09-1.onrender.com/
+
+## Capturas de Tela
+- Home: `deliverables/screenshots/TELLA-Home.png`
+- Login: `deliverables/screenshots/Login-Tella.png`
+- Cadastro: `deliverables/screenshots/Cadastro-Tella.png`
+- Lista de Destinos: `deliverables/screenshots/Destinos-Tella.png`
+- Estimativa de Custos: `deliverables/screenshots/Estimativa-de-Custos-Tella.png`

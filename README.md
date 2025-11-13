@@ -70,6 +70,16 @@ Cada pasta de entrega contém:
 3. Execute os notebooks na ordem indicada
 4. Verifique os deliverables produzidos
 
+## 🌐 Aplicação Deploy (MVP)
+- URL: https://ftl-grupo09-1.onrender.com/
+- Stack: Django + Modelo ML (joblib) + RapidAPI Places.
+
+## 🖼️ Capturas (Demo)
+| Home | Busca Destinos | Planejador |
+|------|----------------|------------|
+| ![Home](2025-10-31/deliverables/screenshots/TELLA-Home.png) | ![Busca](2025-10-31/deliverables/screenshots/Destinos-Tella.png) | ![Planejador](2025-10-31/deliverables/screenshots/Estimativa-de-Custos-Tella.png) |
+
+
 ## 📞 Contato
 
 Para dúvidas ou esclarecimentos sobre o projecto, entre em contato com a equipe do Grupo 09.
